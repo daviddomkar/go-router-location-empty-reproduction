@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
 
     _router = GoRouter(
       refreshListenable: _state,
+      initialLocation: _state.isAuthenticated ? "/" : "/auth/login",
       redirect: (context, state) {
         final status = _state.isAuthenticated;
 
