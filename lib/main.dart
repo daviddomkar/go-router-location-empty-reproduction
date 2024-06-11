@@ -37,6 +37,8 @@ class _MyAppState extends State<MyApp> {
   late final AuthState _state;
   late final GoRouter _router;
 
+  List<String> routes = ["/auth/signup", "/auth/login"];
+
   @override
   void initState() {
     super.initState();
@@ -45,42 +47,34 @@ class _MyAppState extends State<MyApp> {
 
     _router = GoRouter(
       refreshListenable: _state,
+      redirect: (context, state) {
+        final status = _state.isAuthenticated;
+
+        final loggedIn = status;
+
+        final logging = routes.contains(state.matchedLocation);
+
+        if (!loggedIn && !logging) return "/auth/login";
+
+        if (loggedIn && logging) return "/";
+
+        return null;
+      },
       routes: [
         GoRoute(
           path: '/',
-          redirect: (context, state) {
-            if (!_state.isAuthenticated) {
-              return '/auth/login';
-            }
-
-            return null;
-          },
           builder: (context, state) => MyHomePage(
             state: _state,
           ),
         ),
         GoRoute(
           path: '/auth/signup',
-          redirect: (context, state) {
-            if (_state.isAuthenticated) {
-              return '/';
-            }
-
-            return null;
-          },
           builder: (context, state) => MySignupPage(
             state: _state,
           ),
         ),
         GoRoute(
           path: '/auth/login',
-          redirect: (context, state) {
-            if (_state.isAuthenticated) {
-              return '/';
-            }
-
-            return null;
-          },
           builder: (context, state) => MyLoginPage(
             state: _state,
           ),
